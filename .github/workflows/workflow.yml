@@ -36,17 +36,26 @@ jobs:
     runs-on: ubuntu-latest
     needs: delivery
     steps:
-      - name: OWASP ZAP Full Scan
+      - name: Checkout repository code into runner
+        uses: actions/checkout@v4
+
+      - name: Ensure Docker is Installed
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          docker --version  # Check if Docker is installed correctly
+
+      - name: Run OWASP ZAP Full Scan
         uses: zaproxy/action-full-scan@v0.3.0
         with:
-          target: 'https://kind-grass-0fdeb6003.6.azurestaticapps.net/'  # Replace with your actual site
-          fail_action: false  # Change to 'true' if you want to fail on vulnerabilities
+          target: 'https://kind-grass-0fdeb6003.6.azurestaticapps.net/'
+          fail_action: false
 
       - name: Save ZAP Report
         uses: actions/upload-artifact@v4
         with:
           name: zap-report
-          path: report.html  # Store the scan results
+          path: report.html
 
   deploy:
     runs-on: ubuntu-latest
