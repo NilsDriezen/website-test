@@ -39,16 +39,24 @@ jobs:
       - name: Checkout repository code into runner
         uses: actions/checkout@v2
       - name: Run Arachni Scanner
-        uses: arachni/arachni-action@v1
-        with:
-          target: 'https://kind-grass-0fdeb6003.6.azurestaticapps.net/'  # Replace with your website URL
-          report_format: 'html'  # Output report format (e.g., html, json, xml)
-          output_file: 'arachni_report.html'  # Output file name
+        run: |
+          docker run --rm \
+            -v $(pwd)/arachni_report:/home/arachni/reports \
+            arachni/arachni \
+            https://kind-grass-0fdeb6003.6.azurestaticapps.net/ \
+            --report-save-path=/home/arachni/reports/arachni_report.afr
+      - name: Convert Arachni Report to HTML
+        run: |
+          docker run --rm \
+            -v $(pwd)/arachni_report:/home/arachni/reports \
+            arachni/arachni \
+            /home/arachni/reports/arachni_report.afr \
+            --reporter=html:outfile=/home/arachni/reports/arachni_report.html
       - name: Upload Arachni Scan Report
         uses: actions/upload-artifact@v4
         with:
           name: arachni-scan-report
-          path: arachni_report.html  # Arachni generates this report
+          path: arachni_report/arachni_report.html
 
   deploy:
     runs-on: ubuntu-latest
@@ -60,7 +68,4 @@ jobs:
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_DEPLOY_TOKEN }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments). Is automatically present as a secret. Not to be added by the user.
-          action: "upload"
-          app_location: / # App source code path
-          skip_app_build: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments). Is automatically present as a secret. Not to be added by the
