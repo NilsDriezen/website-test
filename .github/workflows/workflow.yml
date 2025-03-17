@@ -38,17 +38,17 @@ jobs:
     steps:
       - name: Checkout repository code into runner
         uses: actions/checkout@v2
-      - name: Run OWASP ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.7.0
+      - name: Run Arachni Scanner
+        uses: arachni/arachni-action@v1
         with:
-          target: 'http://your-website-url'  # Replace with your website URL
-          rules_file_name: '.zap/rules.tsv'  # Optional: Path to custom rules file
-          cmd_options: '-I'  # Optional: Additional ZAP command-line options
-      - name: Upload ZAP Scan Report
+          target: 'https://kind-grass-0fdeb6003.6.azurestaticapps.net/'  # Replace with your website URL
+          report_format: 'html'  # Output report format (e.g., html, json, xml)
+          output_file: 'arachni_report.html'  # Output file name
+      - name: Upload Arachni Scan Report
         uses: actions/upload-artifact@v4
         with:
-          name: zap-scan-report
-          path: zap_report.html  # ZAP generates this report by default
+          name: arachni-scan-report
+          path: arachni_report.html  # Arachni generates this report
 
   deploy:
     runs-on: ubuntu-latest
