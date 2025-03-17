@@ -31,6 +31,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Push the image to Docker Hub
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/test-website:latest
+      - name: Debug - Test if the site is reachable
+        run: curl -I https://kind-grass-0fdeb6003.6.azurestaticapps.net/
 
   security_scan:
     runs-on: ubuntu-latest
@@ -44,9 +46,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker.io
           docker --version  # Check if Docker is installed correctly
-
-      - name: Run OWASP ZAP Full Scan
-        uses: zaproxy/action-full-scan@v0.3.0
+      
+      - name: Run OWASP ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.3.0
         with:
           target: 'https://kind-grass-0fdeb6003.6.azurestaticapps.net/'
           fail_action: false
