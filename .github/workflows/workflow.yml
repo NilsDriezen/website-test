@@ -39,7 +39,7 @@ jobs:
       - name: OWASP ZAP Full Scan
         uses: zaproxy/action-full-scan@v0.3.0
         with:
-          target: 'https://your-website-url.com'  # Replace with your deployed website URL
+          target: 'https://kind-grass-0fdeb6003.6.azurestaticapps.net/'  # Replace with your deployed website URL
           fail_action: false  # Change to 'true' if you want the pipeline to fail on vulnerabilities
       - name: Save ZAP Report
         uses: actions/upload-artifact@v3
