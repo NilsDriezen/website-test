@@ -43,14 +43,14 @@ jobs:
           docker run --rm \
             -v $(pwd)/arachni_report:/home/arachni/reports \
             arachni/arachni \
-            arachni https://kind-grass-0fdeb6003.6.azurestaticapps.net/ \
+            /usr/local/arachni/bin/arachni https://kind-grass-0fdeb6003.6.azurestaticapps.net/ \
             --report-save-path=/home/arachni/reports/arachni_report.afr
       - name: Convert Arachni Report to HTML
         run: |
           docker run --rm \
             -v $(pwd)/arachni_report:/home/arachni/reports \
             arachni/arachni \
-            arachni_reporter /home/arachni/reports/arachni_report.afr \
+            /usr/local/arachni/bin/arachni_reporter /home/arachni/reports/arachni_report.afr \
             --reporter=html:outfile=/home/arachni/reports/arachni_report.html
       - name: Upload Arachni Scan Report
         uses: actions/upload-artifact@v4
